@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bossjob Onboarding</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#0066FF;--primary-light:#F2F4FF;--primary-hover:#005DE9;
+  --success:#2F9E44;--success-light:#EBFBEE;
+  --warning:#F07C00;--warning-light:#FFF4E6;
+  --error:#E03E3E;--error-light:#FFF0F0;
+  --text-primary:#212529;--text-secondary:#868E96;--text-disabled:#CED4DA;
+  --border:#DEE2E6;--bg-page:#F8F9FA;--bg-card:#FFFFFF;
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 12px rgba(0,0,0,0.10);--shadow-lg:0 8px 24px rgba(0,0,0,0.12);
+  --radius-sm:4px;--radius-md:8px;--radius-lg:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg-page);color:var(--text-primary);min-height:100vh;font-size:14px}
+.pg{display:none;min-height:100vh;flex-direction:column}
+.pg.on{display:flex}
+@keyframes up{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+@keyframes hl{0%{background:#DBEAFE}80%{background:#DBEAFE}100%{background:transparent}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Shared Navbar ── */
+nav{height:64px;background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 48px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.logo{position:absolute;left:48px}
+.logo{font-weight:700;font-size:18px;color:var(--text-primary);display:flex;align-items:center;gap:2px;letter-spacing:-.3px}
+.logo-dot{width:7px;height:7px;border-radius:50%;background:#F5A623;margin-bottom:8px;margin-left:1px}
+.steps{display:flex;align-items:center;gap:4px}
+.step{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:13px;font-weight:500;color:var(--text-secondary);border:1px solid transparent;transition:all .2s}
+.step.cur{background:var(--primary-light);color:var(--primary);border-color:#D0D8FF}
+.step.done{background:var(--success-light);color:var(--success);border-color:#BBF7D0}
+.step-num{width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#DEE2E6;color:#868E96}
+.step.cur .step-num{background:var(--primary);color:#fff}
+.step.done .step-num{background:var(--success);color:#fff}
+.step-sep{color:var(--border);font-size:12px;padding:0 2px}
+
+/* ══ PAGE 1 — Resume Upload ══ */
+#p1 main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;background:var(--bg-page)}
+.p1-wrap{width:100%;max-width:480px;display:flex;flex-direction:column;gap:0;animation:up .4s ease}
+.ai-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.ai-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0066FF 0%,#4D9FFF 100%);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 6px 16px rgba(0,102,255,.28)}
+.ai-intro-name{font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:2px}
+.ai-intro-sub{font-size:12px;color:var(--text-secondary)}
+.ai-speech{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow-sm);margin-bottom:20px}
+.ai-speech-title{font-size:18px;font-weight:700;margin-bottom:14px;color:var(--text-primary);letter-spacing:-.2px}
+.cap-list{display:flex;flex-direction:column;gap:10px}
+.cap-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-secondary);line-height:1.5}
+.cap-icon{font-size:16px;flex-shrink:0;width:24px;text-align:center}
+.action-cards{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.action-card{display:flex;align-items:center;gap:16px;background:var(--bg-page);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:all .18s}
+.action-card:hover{border-color:var(--primary);background:var(--primary-light)}
+.action-card.loading{pointer-events:none;opacity:.7}
+.action-card.done{border-color:#BBF7D0;background:var(--success-light)}
+.ac-icon-wrap{width:44px;height:44px;border-radius:var(--radius-md);background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ac-icon{font-size:20px;font-weight:700;line-height:1}
+.ac-content{flex:1}
+.ac-title{font-size:15px;font-weight:600;margin-bottom:4px}
+.ac-sub{font-size:13px;color:var(--text-secondary);line-height:1.5}
+.ac-arrow{font-size:22px;color:var(--text-primary);font-weight:500;flex-shrink:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag-blue{padding:3px 10px;border-radius:var(--radius-sm);font-size:12px;font-weight:500;background:#EEF3FF;color:var(--primary)}
+
+/* Existing profiles */
+.existing-label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:10px}
+.existing-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.existing-card{display:flex;align-items:center;gap:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;cursor:pointer;transition:all .18s}
+.existing-card:hover{border-color:var(--primary);background:var(--primary-light)}
+.ec-avatar{width:36px;height:36px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;font-weight:700;color:var(--primary)}
+.ec-info{flex:1}
+.ec-name{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:2px}
+.ec-meta{font-size:11px;color:var(--text-secondary)}
+.ec-badge{font-size:11px;font-weight:500;color:var(--success);background:var(--success-light);padding:3px 9px;border-radius:100px}
+.ec-arrow{font-size:18px;color:var(--text-disabled)}
+
+/* ══ PAGE 1B — Editor + Live Preview ══ */
+#p1b{min-height:100vh}
+#p1b main{flex:1;display:flex;overflow:hidden;height:calc(100vh - 64px)}
+.editor-col{width:400px;flex-shrink:0;display:flex;flex-direction:column;overflow-y:auto;padding:20px 16px;background:var(--bg-page);border-right:1px solid var(--border)}
+.editor-col::-webkit-scrollbar{width:0}
+.score-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:14px;box-shadow:var(--shadow-sm);flex-shrink:0}
+.score-gauge-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.score-gauge{width:110px;height:66px}
+.score-cta{margin-top:6px;padding:5px 12px;background:var(--primary);color:#fff;border-radius:100px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+.score-cta:hover{background:var(--primary-hover)}
+.score-desc{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.r-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:12px;flex-shrink:0}
+.r-tab{padding:7px 4px;margin-right:16px;font-size:13px;font-weight:600;color:var(--primary);border-bottom:2px solid var(--primary);margin-bottom:-1px;cursor:pointer}
+.r-sections{display:flex;flex-direction:column;gap:8px;flex:1}
+.rs-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+.rs-item-head{display:flex;align-items:center;gap:10px;padding:11px 13px;cursor:pointer;user-select:none}
+.rs-icon{width:30px;height:30px;border-radius:var(--radius-md);background:var(--bg-page);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.rs-info{flex:1}
+.rs-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rs-sub{font-size:11px;color:var(--text-secondary);margin-top:1px}
+.rs-warn-badge{font-size:10px;font-weight:500;color:var(--warning);background:var(--warning-light);padding:2px 7px;border-radius:100px}
+.rs-chevron{font-size:16px;color:var(--text-secondary);transition:transform .2s;line-height:1;flex-shrink:0}
+.rs-body{padding:0 13px 13px;border-top:1px solid var(--bg-page)}
+.rs-warn-banner{background:var(--warning-light);border:1px solid #FFD8A8;border-radius:var(--radius-md);padding:8px 11px;font-size:11px;color:var(--warning);margin-bottom:10px;margin-top:2px;line-height:1.5}
+.rs-field{margin-bottom:9px}.rs-field:last-child{margin-bottom:0}
+.rs-field label{display:block;font-size:11px;font-weight:600;color:var(--text-secondary);margin-bottom:4px}
+.rs-input{width:100%;height:34px;padding:0 11px;border:1px solid var(--border);border-radius:100px;font-size:12px;font-family:var(--font);color:var(--text-primary);background:var(--bg-card);outline:none;transition:all .15s}
+.rs-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,102,255,.08)}
+.rs-textarea{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius-md);font-size:12px;font-family:var(--font);color:var(--text-primary);background:var(--bg-card);outline:none;resize:vertical;min-height:68px;line-height:1.6;transition:all .15s}
+.rs-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,102,255,.08)}
+.rs-exp-card{background:var(--bg-page);border:1px solid var(--border);border-radius:var(--radius-md);padding:9px 11px;margin-bottom:6px}
+.rs-exp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.rs-exp-title{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rs-exp-company{font-size:11px;color:var(--text-secondary)}
+.rs-ai-btn{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);color:var(--primary);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.rs-ai-btn:hover{background:var(--primary-light);border-color:var(--primary)}
+.rs-add-btn{width:100%;padding:8px;border:1.5px dashed var(--primary);border-radius:var(--radius-md);background:var(--primary-light);color:var(--primary);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .15s;margin-top:2px}
+.rs-add-btn:hover{background:#E8EDFF}
+.rs-skills-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.rs-skill-tag{padding:3px 9px;border-radius:100px;border:1px solid var(--border);font-size:11px;background:var(--bg-card)}
+.editor-footer{padding:16px 0 8px;flex-shrink:0}
+.btn-full{width:100%;height:40px;background:var(--primary);border:none;border-radius:var(--radius-lg);font-size:14px;font-weight:600;font-family:var(--font);color:#fff;cursor:pointer;transition:background .15s}
+.btn-full:hover{background:var(--primary-hover)}
+.preview-col{flex:1;overflow-y:auto;padding:20px 28px;background:var(--bg-page)}
+.preview-col::-webkit-scrollbar{width:0}
+.preview-label{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px}
+.preview-doc{background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:32px 40px;max-width:640px;animation:up .3s ease}
+.pv-name{font-size:22px;font-weight:700;margin-bottom:5px}
+.pv-contact{font-size:12px;color:var(--text-secondary);margin-bottom:18px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pv-section{margin-bottom:18px}
+.pv-sec-title{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.pv-item{margin-bottom:11px}.pv-item:last-child{margin-bottom:0}
+.pv-item-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1px;font-size:13px}
+.pv-date{font-size:11px;color:var(--text-secondary)}
+.pv-item-sub{font-size:12px;color:var(--text-secondary);margin-bottom:4px}
+.pv-text{font-size:12px;color:#495057;line-height:1.7}
+.pv-bullets{list-style:none;padding:0;display:flex;flex-direction:column;gap:3px}
+.pv-bullets li{font-size:12px;color:#495057;line-height:1.6;padding-left:12px;position:relative}
+.pv-bullets li::before{content:'·';position:absolute;left:0;color:var(--border)}
+.pv-skills{font-size:12px;color:#495057;line-height:1.8}
+.pv-hl{animation:hl 1.4s ease forwards;border-radius:3px;padding:0 2px}
+
+/* ══ PAGE 2 — Preferences (chat + floating card) ══ */
+#p2{background:var(--bg-page)}
+#p2 main{flex:1;display:flex;overflow:hidden;height:calc(100vh - 64px)}
+
+/* Left: chat conversation column */
+.pref-chat-col{flex:1;display:flex;flex-direction:column;max-width:680px;margin:0 auto;position:relative}
+
+/* Timeline / messages area */
+.pref-msgs{flex:1;overflow-y:auto;padding:28px 24px 0;display:flex;flex-direction:column;gap:0}
+.pref-msgs::-webkit-scrollbar{width:0}
+
+/* Connector line between bubbles */
+.pref-connector{display:flex;flex-direction:column;align-items:center;margin:2px 0 2px 18px;gap:0}
+.pref-connector-line{width:2px;height:14px;background:linear-gradient(to bottom,#BBF7D0,#BBF7D0);border-left:2px dashed #BBF7D0}
+.pref-connector-dot{width:8px;height:8px;border-radius:50%;border:2px solid var(--success);background:var(--bg-card)}
+
+/* AI message */
+.pm-ai{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;animation:up .25s ease both}
+.pm-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0066FF,#4D9FFF);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
+.pm-bubble{background:var(--bg-card);border:1px solid var(--border);border-radius:4px var(--radius-lg) var(--radius-lg) var(--radius-lg);padding:12px 16px;font-size:13px;line-height:1.65;color:var(--text-primary);max-width:480px;box-shadow:var(--shadow-sm)}
+
+/* User answer bubble */
+.pm-user{display:flex;justify-content:flex-end;margin-bottom:6px;animation:up .2s ease both}
+.pm-user-bubble{background:var(--primary);color:#fff;border-radius:var(--radius-lg) 4px var(--radius-lg) var(--radius-lg);padding:10px 14px;font-size:13px;line-height:1.6;max-width:380px}
+
+/* Floating card — anchored to bottom of chat col */
+.pref-card-anchor{flex-shrink:0;padding:12px 24px 0}
+.pref-float-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);animation:slideUp .28s cubic-bezier(.16,1,.3,1) both}
+.pfc-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
+.pfc-title{font-size:14px;font-weight:700;color:var(--text-primary)}
+.pfc-pager{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);font-weight:500}
+.pfc-pager-btn{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1}
+.pfc-pager-btn:hover:not(:disabled){border-color:var(--primary);color:var(--primary)}
+.pfc-pager-btn:disabled{opacity:.3;cursor:default}
+.pfc-body{padding:16px 18px}
+.pfc-label{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:12px}
+
+/* Chip options */
+.pfc-chips{display:flex;flex-wrap:wrap;gap:8px}
+.pfc-chip{padding:8px 14px;border-radius:100px;border:1.5px solid var(--border);font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;background:var(--bg-card);user-select:none}
+.pfc-chip:hover{border-color:var(--primary);color:var(--primary)}
+.pfc-chip.sel{border-color:var(--primary);background:var(--primary-light);color:var(--primary)}
+
+/* Radio options */
+.pfc-opts{display:flex;flex-direction:column}
+.pfc-opt{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--bg-page);cursor:pointer;transition:all .15s;user-select:none}
+.pfc-opt:last-child{border-bottom:none}
+.pfc-opt-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.pfc-opt.sel .pfc-opt-radio{border-color:var(--primary);background:var(--primary)}
+.pfc-opt.sel .pfc-opt-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+.pfc-opt-label{font-size:13px;color:var(--text-primary);flex:1}
+.pfc-opt.sel .pfc-opt-label{color:var(--primary);font-weight:500}
+
+/* Location */
+.pfc-loc-input{width:100%;height:38px;padding:0 14px;border:1px solid var(--border);border-radius:100px;font-size:13px;font-family:var(--font);color:var(--text-primary);background:var(--bg-card);outline:none;transition:all .15s;margin-bottom:10px}
+.pfc-loc-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,102,255,.1)}
+.pfc-loc-input::placeholder{color:var(--text-disabled)}
+.pfc-loc-sugs{display:flex;flex-wrap:wrap;gap:6px}
+.pfc-loc-sug{padding:5px 12px;border-radius:100px;border:1px solid var(--border);font-size:12px;color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.pfc-loc-sug:hover{border-color:var(--primary);color:var(--primary)}
+
+/* Salary */
+.pfc-sal-currency-row{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:10px}
+.pfc-sal-prefix{padding:0 12px;height:40px;background:#F1F3F5;border-right:1px solid var(--border);display:flex;align-items:center;font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;flex-shrink:0}
+.pfc-sal-inp{flex:1;height:40px;border:none;outline:none;padding:0 12px;font-size:13px;font-family:var(--font);color:var(--text-primary);background:var(--bg-card)}
+.pfc-sal-sep{padding:0 10px;color:var(--text-disabled);font-size:14px;flex-shrink:0}
+.pfc-sal-period{height:40px;padding:0 10px;border-left:1px solid var(--border);background:#F1F3F5;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.pfc-sal-period select{border:none;background:transparent;font-size:13px;font-family:var(--font);color:var(--text-primary);outline:none;cursor:pointer}
+.pfc-neg-row{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.pfc-neg-check{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.pfc-neg-check.on{background:var(--primary);border-color:var(--primary)}
+.pfc-neg-check.on::after{content:'✓';font-size:10px;color:#fff;font-weight:700}
+.pfc-neg-label{font-size:13px;color:var(--text-primary)}
+
+/* Card footer */
+.pfc-foot{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid var(--border);background:var(--bg-page)}
+.pfc-back{height:32px;padding:0 16px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--bg-card);font-size:13px;font-weight:500;font-family:var(--font);color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.pfc-back:hover{border-color:var(--text-primary);color:var(--text-primary)}
+.pfc-back:disabled{opacity:.3;cursor:default;pointer-events:none}
+.pfc-next{height:32px;padding:0 20px;border:none;border-radius:var(--radius-md);background:var(--primary);font-size:13px;font-weight:600;font-family:var(--font);color:#fff;cursor:pointer;transition:all .15s;opacity:.35;pointer-events:none}
+.pfc-next.en{opacity:1;pointer-events:auto}.pfc-next.en:hover{background:var(--primary-hover)}
+
+/* Bottom AI input bar */
+.pref-input-bar{flex-shrink:0;margin:10px 24px 8px}
+.pref-input-inner{display:flex;align-items:center;gap:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:8px 10px 8px 16px;box-shadow:var(--shadow-sm)}
+.pref-field{flex:1;border:none;outline:none;font-size:13px;font-family:var(--font);color:var(--text-primary);background:transparent}
+.pref-field::placeholder{color:var(--text-disabled)}
+.pref-send{width:34px;height:34px;border-radius:50%;background:var(--primary);border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.pref-send:hover{background:var(--primary-hover)}
+.pref-note{text-align:center;font-size:11px;color:var(--text-disabled);margin-bottom:12px}
+
+/* Right: summary panel */
+.pref-summary-col{width:260px;flex-shrink:0;display:flex;flex-direction:column;border-left:1px solid var(--border);background:var(--bg-card)}
+.pref-summary-inner{flex:1;overflow-y:auto;padding:24px 20px}
+.pref-summary-inner::-webkit-scrollbar{width:0}
+.panel-title{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:16px}
+.prog-wrap{margin-bottom:18px}
+.prog-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-secondary);margin-bottom:6px}
+.prog-bar{height:4px;background:var(--border);border-radius:2px}
+.prog-fill{height:100%;background:var(--primary);border-radius:2px;transition:width .4s ease}
+.pref-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bg-page)}
+.pref-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.pref-dot{width:7px;height:7px;border-radius:50%;background:var(--border);margin-top:5px;flex-shrink:0;transition:background .3s}
+.pref-row.filled .pref-dot{background:var(--success)}
+.pref-key{font-size:11px;color:var(--text-secondary);margin-bottom:3px}
+.pref-val{font-size:13px;font-weight:500;line-height:1.4}
+.pref-val.empty{color:var(--text-disabled);font-weight:400}
+.extra-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--bg-page)}
+.extra-title{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:10px}
+.extra-item{font-size:12px;color:var(--text-secondary);background:var(--bg-page);border-radius:var(--radius-sm);padding:6px 10px;margin-bottom:6px;line-height:1.5}
+.pref-cta{padding:16px 20px;border-top:1px solid var(--border)}
+.btn-match{width:100%;height:44px;background:var(--primary);border:none;border-radius:var(--radius-lg);font-size:14px;font-weight:600;font-family:var(--font);color:#fff;cursor:pointer;transition:all .15s;opacity:.3;pointer-events:none}
+.btn-match.en{opacity:1;pointer-events:auto}.btn-match.en:hover{background:var(--primary-hover)}
+
+/* ══ PAGE 3 ══ */
+#p3 main{flex:1;display:flex;flex-direction:column;align-items:center;padding:24px 24px 40px}
+.p3hd{text-align:center;margin-bottom:20px}
+.p3hd h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.p3hd p{font-size:13px;color:var(--text-secondary)}
+.p3dots{display:flex;gap:6px;margin-top:14px;justify-content:center}
+.pdot{width:24px;height:4px;border-radius:2px;background:var(--border);transition:all .3s}
+.pdot.cur{background:var(--primary);width:32px}.pdot.lk{background:var(--success)}.pdot.dl{background:var(--error)}
+.jcwrap{width:100%;max-width:620px;flex:1;display:flex;flex-direction:column}
+.jc{background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:28px;display:none;animation:up .28s ease both;flex:1;flex-direction:column}
+.jc.on{display:flex}
+.jct{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px}
+.jcl{width:52px;height:52px;border-radius:var(--radius-lg);background:#F1F3F5;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.jci{flex:1}.jcc{font-size:12px;color:var(--text-secondary);margin-bottom:3px}
+.jcn{font-size:18px;font-weight:700;letter-spacing:-.2px;margin-bottom:10px}
+.jcgs{display:flex;gap:6px;flex-wrap:wrap}
+.jcg{padding:3px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:12px;color:var(--text-secondary)}
+.jcm{padding:3px 10px;border-radius:var(--radius-sm);background:var(--success-light);border:1px solid #BBF7D0;font-size:12px;color:var(--success);font-weight:600}
+.jcdv{height:1px;background:var(--bg-page);margin:18px 0}
+.jcst{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:10px}
+.jcbs{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.jcb{display:flex;gap:10px;font-size:13px;color:#495057;line-height:1.6;align-items:flex-start}
+.jcb::before{content:'·';color:var(--border);flex-shrink:0;font-size:16px;line-height:1.4}
+.jcrs{display:flex;gap:6px;flex-wrap:wrap}
+.jcr{font-size:13px;padding:8px 14px;border-radius:var(--radius-md);background:var(--primary-light);border:1px solid #D0D8FF;color:var(--text-primary);line-height:1.6;width:100%}
+.jcspace{flex:1}
+.mact{display:flex;gap:12px;margin-top:20px;width:100%;max-width:620px}
+.btn-dislike{flex:1;height:48px;border:1.5px solid var(--border);border-radius:var(--radius-lg);background:var(--bg-card);font-size:15px;font-weight:600;font-family:var(--font);color:var(--text-secondary);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-dislike:hover{border-color:var(--error);color:var(--error);background:var(--error-light)}
+.btn-like{flex:1;height:48px;border:none;border-radius:var(--radius-lg);background:var(--primary);font-size:15px;font-weight:600;font-family:var(--font);color:#fff;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-like:hover{background:var(--primary-hover)}
+.mov{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:100}
+.mov.on{display:flex;animation:fi .2s ease}
+.mo{background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:28px;width:420px;max-width:90vw;animation:up .22s ease}
+.mot{font-size:16px;font-weight:700;margin-bottom:6px}.mos{font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.6}
+.mota{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:var(--radius-md);font-size:14px;font-family:var(--font);color:var(--text-primary);resize:none;outline:none;min-height:96px;transition:all .15s;background:var(--bg-page)}
+.mota:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,102,255,.1);background:var(--bg-card)}
+.mof{display:flex;gap:10px;margin-top:14px}
+.btn-cancel{flex:1;height:40px;border:1px solid var(--border);border-radius:var(--radius-md);background:transparent;font-size:14px;font-weight:500;font-family:var(--font);color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.btn-cancel:hover{border-color:var(--text-primary);color:var(--text-primary)}
+.btn-sub{flex:1;height:40px;border:none;border-radius:var(--radius-md);background:var(--primary);font-size:14px;font-weight:600;font-family:var(--font);color:#fff;cursor:pointer;transition:all .15s;opacity:.3;pointer-events:none}
+.btn-sub.on{opacity:1;pointer-events:auto}.btn-sub.on:hover{background:var(--primary-hover)}
+
+/* ══ PAGE 4 ══ */
+#p4 main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:16px;text-align:center}
+.p4icon{font-size:48px;animation:up .4s ease}
+.p4title{font-size:28px;font-weight:700;letter-spacing:-.4px;animation:up .45s ease}
+.p4sub{font-size:14px;color:var(--text-secondary);max-width:360px;line-height:1.7;animation:up .5s ease}
+.p4badge{padding:10px 28px;background:var(--primary);border-radius:100px;font-size:14px;font-weight:600;color:#fff;animation:up .55s ease}
+.p4done{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:100px;background:var(--success-light);border:1px solid #BBF7D0;font-size:13px;color:var(--success);font-weight:500;animation:up .65s ease}
+.p4grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:680px;margin-top:24px;opacity:.2;pointer-events:none;animation:up .6s ease}
+.p4cd{background:var(--bg-card);border-radius:var(--radius-lg);border:1px solid var(--border);padding:18px;display:flex;flex-direction:column;gap:8px}
+.ph{height:10px;border-radius:5px;background:#DEE2E6}.ph.s{width:50%}.ph.m{width:72%}.ph.l{width:90%}
+.ph2{height:8px;border-radius:4px;background:#E9ECEF}.ph2.s{width:40%}.ph2.m{width:65%}.ph2.l{width:85%}
+</style>
+</head>
+<body>
+
+<!-- ══ PAGE 1 — Resume ══ -->
+<div class="pg on" id="p1">
+  <nav>
+    <div class="logo">bossjob<div class="logo-dot"></div></div>
+    <div class="steps">
+      <div class="step cur"><div class="step-num">1</div> Resume</div><div class="step-sep">›</div>
+      <div class="step"><div class="step-num">2</div> Preferences</div><div class="step-sep">›</div>
+      <div class="step"><div class="step-num">3</div> Matches</div><div class="step-sep">›</div>
+      <div class="step"><div class="step-num">4</div> Explore</div>
+    </div>
+  </nav>
+  <main>
+    <div class="p1-wrap">
+      <!-- AI intro -->
+      <div class="ai-row">
+        <div class="ai-avatar">✦</div>
+        <div><div class="ai-intro-name">Boss AI</div><div class="ai-intro-sub">Your personal career assistant</div></div>
+      </div>
+      <div class="ai-speech">
+        <div class="ai-speech-title">Hi, I'm Boss AI 👋</div>
+        <div class="cap-list">
+          <div class="cap-item"><span class="cap-icon">📄</span>Parse your resume automatically</div>
+          <div class="cap-item"><span class="cap-icon">🎯</span>Understand your job preferences</div>
+          <div class="cap-item"><span class="cap-icon">✨</span>Surface best-matched roles for you</div>
+        </div>
+      </div>
+
+      <!-- Upload options -->
+      <div class="action-cards">
+        <div class="action-card" id="upz" onclick="doUp()">
+          <div class="ac-icon-wrap"><div class="ac-icon" id="up-icon">↑</div></div>
+          <div class="ac-content" id="up-content">
+            <div class="ac-title">Upload a resume file</div>
+            <div class="ac-sub">Supported file types: PDF, DOC, DOCX (up to 30MB)</div>
+          </div>
+          <div class="ac-arrow">›</div>
+        </div>
+        <div class="action-card" onclick="goTo('p1b')">
+          <div class="ac-icon-wrap"><div class="ac-icon">✏</div></div>
+          <div class="ac-content">
+            <div class="ac-title">Fill out your resume online</div>
+            <div class="ac-sub">Quickly fill in and generate an attached resume file</div>
+          </div>
+          <div class="ac-arrow">›</div>
+        </div>
+      </div>
+
+      <!-- Existing profiles (commented out)
+      <div class="existing-label">Your existing profiles</div>
+      <div class="existing-cards">
+        <div class="existing-card" onclick="goTo('p1b')">
+          <div class="ec-avatar">A</div>
+          <div class="ec-info">
+            <div class="ec-name">Alex Chen — Product Manager</div>
+            <div class="ec-meta">Last updated · 2 days ago</div>
+          </div>
+          <div class="ec-badge">Active</div>
+          <div class="ec-arrow">›</div>
+        </div>
+        <div class="existing-card" onclick="goTo('p1b')">
+          <div class="ec-avatar" style="background:#FFF4E6;color:#F07C00">A</div>
+          <div class="ec-info">
+            <div class="ec-name">Alex Chen — Data Analyst</div>
+            <div class="ec-meta">Last updated · 3 weeks ago</div>
+          </div>
+          <div class="ec-arrow">›</div>
+        </div>
+      </div>
+      -->
+    </div>
+  </main>
+</div>
+
+<!-- PAGE 1B removed -->
+<div class="pg" id="p1b" style="display:none!important">
+  <main>
+    <div class="editor-col">
+      <div class="score-card">
+        <div class="score-gauge-wrap">
+          <svg class="score-gauge" viewBox="0 0 120 72" fill="none">
+            <path d="M12,68 A52,52 0 0,1 108,68" stroke="#E9ECEF" stroke-width="11" stroke-linecap="round" fill="none"/>
+            <path d="M12,68 A52,52 0 0,1 46,20" stroke="#E03E3E" stroke-width="11" stroke-linecap="round" fill="none"/>
+            <path d="M46,20 A52,52 0 0,1 78,14" stroke="#F07C00" stroke-width="11" stroke-linecap="round" fill="none"/>
+            <path d="M78,14 A52,52 0 0,1 108,68" stroke="#2F9E44" stroke-width="11" stroke-linecap="round" fill="none"/>
+            <circle cx="75" cy="16" r="5.5" fill="#fff" stroke="#343A40" stroke-width="2"/>
+            <text x="60" y="60" text-anchor="middle" font-size="17" font-weight="700" fill="#212529" font-family="Inter,sans-serif">72%</text>
+          </svg>
+          <div class="score-cta">Score Details →</div>
+        </div>
+        <div class="score-desc">Your resume is solid overall, but several sections need polishing to improve ATS performance and readability.</div>
+      </div>
+      <div class="r-tabs"><div class="r-tab active">✏ Edit</div></div>
+      <div class="r-sections">
+        <div class="rs-item" onclick="toggleSection(this)">
+          <div class="rs-item-head"><div class="rs-icon">👤</div><div class="rs-info"><div class="rs-title">Personal Details</div><div class="rs-sub">Basic profile information</div></div><div class="rs-chevron">›</div></div>
+          <div class="rs-body" style="display:none">
+            <div class="rs-field"><label>Full Name</label><input type="text" value="Alex Chen" class="rs-input" oninput="syncPreview('name',this.value)"></div>
+            <div class="rs-field"><label>Email</label><input type="text" value="alex@email.com" class="rs-input" oninput="syncPreview('email',this.value)"></div>
+            <div class="rs-field"><label>Location</label><input type="text" value="San Francisco, CA" class="rs-input" oninput="syncPreview('location',this.value)"></div>
+            <div class="rs-field"><label>LinkedIn</label><input type="text" value="linkedin.com/in/alexchen" class="rs-input" oninput="syncPreview('linkedin',this.value)"></div>
+          </div>
+        </div>
+        <div class="rs-item" onclick="toggleSection(this)">
+          <div class="rs-item-head"><div class="rs-icon">📝</div><div class="rs-info"><div class="rs-title">Summary & Achievements</div><div class="rs-sub">Professional summary and key achievements</div></div><div class="rs-chevron">›</div></div>
+          <div class="rs-body" style="display:none">
+            <div class="rs-field"><label>Professional Summary</label><textarea class="rs-textarea" oninput="syncPreview('summary',this.value)">Product Manager with 3+ years of experience driving end-to-end product development at high-growth companies.</textarea></div>
+          </div>
+        </div>
+        <div class="rs-item" onclick="toggleSection(this)">
+          <div class="rs-item-head"><div class="rs-icon">🎓</div><div class="rs-info"><div class="rs-title">Education <span class="rs-warn-badge">⚠ Fix 1 issue</span></div><div class="rs-sub">Your education</div></div><div class="rs-chevron">›</div></div>
+          <div class="rs-body" style="display:none">
+            <div class="rs-warn-banner">⚠ Missing graduation date — add it to improve ATS score.</div>
+            <div class="rs-field"><label>Degree</label><input type="text" value="B.S. Computer Science" class="rs-input" oninput="syncPreview('edu-degree',this.value)"></div>
+            <div class="rs-field"><label>School</label><input type="text" value="University of California, Berkeley" class="rs-input" oninput="syncPreview('edu-school',this.value)"></div>
+            <div class="rs-field"><label>Graduation Year</label><input type="text" placeholder="e.g. 2020" class="rs-input" oninput="syncPreview('edu-year',this.value)"></div>
+          </div>
+        </div>
+        <div class="rs-item">
+          <div class="rs-item-head" onclick="toggleSection(this.closest('.rs-item'))"><div class="rs-icon">💼</div><div class="rs-info"><div class="rs-title">Work Experience</div><div class="rs-sub">Your professional experiences</div></div><div class="rs-chevron" style="transform:rotate(90deg)">›</div></div>
+          <div class="rs-body">
+            <div class="rs-exp-card"><div class="rs-exp-head"><div class="rs-exp-title">Product Manager <span class="rs-warn-badge">⚠ Fix 1 issue</span></div><button class="rs-ai-btn" onclick="event.stopPropagation()">✦</button></div><div class="rs-exp-company">Stripe · 2022 – Present</div></div>
+            <div class="rs-exp-card"><div class="rs-exp-head"><div class="rs-exp-title">Associate Product Manager</div><button class="rs-ai-btn" onclick="event.stopPropagation()">✦</button></div><div class="rs-exp-company">Shopify · 2020 – 2022</div></div>
+            <div class="rs-exp-card"><div class="rs-exp-head"><div class="rs-exp-title">Product Intern</div><button class="rs-ai-btn" onclick="event.stopPropagation()">✦</button></div><div class="rs-exp-company">Notion · 2019 – 2020</div></div>
+            <button class="rs-add-btn" onclick="event.stopPropagation()">+ Add Experience</button>
+          </div>
+        </div>
+        <div class="rs-item" onclick="toggleSection(this)">
+          <div class="rs-item-head"><div class="rs-icon">⚙</div><div class="rs-info"><div class="rs-title">Skills</div><div class="rs-sub">Technical & professional skills</div></div><div class="rs-chevron">›</div></div>
+          <div class="rs-body" style="display:none">
+            <div class="rs-skills-wrap"><span class="rs-skill-tag">Product Strategy</span><span class="rs-skill-tag">SQL</span><span class="rs-skill-tag">Python</span><span class="rs-skill-tag">Figma</span><span class="rs-skill-tag">A/B Testing</span><span class="rs-skill-tag">Roadmapping</span><span class="rs-skill-tag">Agile</span></div>
+            <button class="rs-add-btn" onclick="event.stopPropagation()">+ Add Skill</button>
+          </div>
+        </div>
+      </div>
+      <div class="editor-footer"><button class="btn-full" onclick="goTo('p2')">Looks good, continue →</button></div>
+    </div>
+    <div class="preview-col">
+      <div class="preview-label">Live Preview</div>
+      <div class="preview-doc">
+        <div class="pv-name" id="pv-name">Alex Chen</div>
+        <div class="pv-contact"><span id="pv-email">alex@email.com</span><span>·</span><span id="pv-location">San Francisco, CA</span><span>·</span><span id="pv-linkedin">linkedin.com/in/alexchen</span></div>
+        <div class="pv-section"><div class="pv-sec-title">Summary</div><div class="pv-text" id="pv-summary">Product Manager with 3+ years of experience driving end-to-end product development at high-growth companies.</div></div>
+        <div class="pv-section"><div class="pv-sec-title">Work Experience</div>
+          <div class="pv-item"><div class="pv-item-hd"><strong>Product Manager</strong><span class="pv-date">2022 – Present</span></div><div class="pv-item-sub">Stripe · San Francisco, CA</div><ul class="pv-bullets"><li>Led end-to-end product development for Checkout, increasing conversion by 18%</li><li>Collaborated with 4 engineering teams to ship 3 major features in 2023</li><li>Defined KPIs across 12 product metrics using SQL and Looker</li></ul></div>
+          <div class="pv-item"><div class="pv-item-hd"><strong>Associate Product Manager</strong><span class="pv-date">2020 – 2022</span></div><div class="pv-item-sub">Shopify · Remote</div><ul class="pv-bullets"><li>Owned merchant onboarding flow, reducing drop-off by 23%</li><li>Ran A/B tests on pricing page, driving $2M additional ARR</li></ul></div>
+          <div class="pv-item"><div class="pv-item-hd"><strong>Product Intern</strong><span class="pv-date">2019 – 2020</span></div><div class="pv-item-sub">Notion</div></div>
+        </div>
+        <div class="pv-section"><div class="pv-sec-title">Education</div><div class="pv-item"><div class="pv-item-hd"><strong id="pv-edu-degree">B.S. Computer Science</strong><span class="pv-date" id="pv-edu-year"></span></div><div class="pv-item-sub" id="pv-edu-school">University of California, Berkeley</div></div></div>
+        <div class="pv-section"><div class="pv-sec-title">Skills</div><div class="pv-skills">Product Strategy · SQL · Python · Figma · A/B Testing · Roadmapping · Agile / Scrum</div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ══ PAGE 2 — Preferences (chat + floating card) ══ -->
+<div class="pg" id="p2">
+  <nav>
+    <div class="logo">bossjob<div class="logo-dot"></div></div>
+    <div class="steps">
+      <div class="step done"><div class="step-num">✓</div> Resume</div><div class="step-sep">›</div>
+      <div class="step cur"><div class="step-num">2</div> Preferences</div><div class="step-sep">›</div>
+      <div class="step"><div class="step-num">3</div> Matches</div><div class="step-sep">›</div>
+      <div class="step"><div class="step-num">4</div> Explore</div>
+    </div>
+  </nav>
+  <main>
+    <!-- Chat + card column -->
+    <div class="pref-chat-col">
+      <!-- Message stream -->
+      <div class="pref-msgs" id="pref-msgs">
+        <div class="pm-ai" style="margin-bottom:4px">
+          <div class="pm-av">✦</div>
+          <div class="pm-bubble">Great profile! Now let's set your job preferences so I can find the best matches for you.</div>
+        </div>
+        <div class="pref-connector"><div class="pref-connector-line"></div><div class="pref-connector-dot"></div></div>
+        <div class="pm-ai" style="margin-bottom:8px">
+          <div class="pm-av">✦</div>
+          <div class="pm-bubble">First up — <strong>what job functions</strong> are you interested in?</div>
+        </div>
+        <!-- User answers appear here dynamically -->
+      </div>
+
+      <!-- Floating card -->
+      <div class="pref-card-anchor">
+        <div class="pref-float-card" id="pref-float-card">
+          <!-- Card content swapped per step -->
+          <div class="pfc-head">
+            <div class="pfc-title" id="pfc-title">Job Function</div>
+            <div class="pfc-pager">
+              <button class="pfc-pager-btn" id="pfc-prev" onclick="pfcPrev()" disabled>‹</button>
+              <span id="pfc-page">1 / 5</span>
+              <button class="pfc-pager-btn" id="pfc-next-pg" onclick="pfcNext()" disabled>›</button>
+            </div>
+          </div>
+          <div class="pfc-body" id="pfc-body">
+            <!-- Step 1: Job Function chips -->
+            <div class="pfc-label">Select all that apply</div>
+            <div class="pfc-chips" id="pfc-chips">
+              <div class="pfc-chip" onclick="togglePFCChip(this)">Product Management</div>
+              <div class="pfc-chip" onclick="togglePFCChip(this)">Software Engineering</div>
+              <div class="pfc-chip" onclick="togglePFCChip(this)">Data Science</div>
+              <div class="pfc-chip" onclick="togglePFCChip(this)">UX / Design</div>
+              <div class="pfc-chip" onclick="togglePFCChip(this)">Marketing</div>
+              <div class="pfc-chip" onclick="togglePFCChip(this)">Operations</div>
+              <div class="pfc-chip" onclick="togglePFCChip(this)">Sales</div>
+              <div class="pfc-chip" onclick="togglePFCChip(this)">Finance</div>
+            </div>
+          </div>
+          <div class="pfc-foot">
+            <button class="pfc-back" id="pfc-back-btn" onclick="pfcPrev()" disabled>Back</button>
+            <div style="display:flex;gap:8px">
+              <button class="pfc-back" id="pfc-skip-btn" onclick="pfcSkip()">Skip</button>
+              <button class="pfc-next en" id="pfc-submit" onclick="pfcSubmit()">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI input bar -->
+      <div class="pref-input-bar">
+        <div class="pref-input-inner">
+          <input class="pref-field" id="pref-inp" placeholder="Tell me what kind of jobs you are (or aren't) looking for." onkeydown="if(event.key==='Enter')sendPrefMsg()">
+          <button class="pref-send" onclick="sendPrefMsg()">↑</button>
+        </div>
+      </div>
+      <div class="pref-note">Boss AI can make mistakes. Check important info.</div>
+      <!-- hidden storage for soft-constraint notes -->
+      <div id="extra-section" style="display:none"><div id="extra-items"></div></div>
+  <div style="padding:0 24px 16px;text-align:right">
+    <button class="btn-match" id="btn-match" onclick="goToMatches()" style="width:auto;padding:0 24px">View Matches →</button>
+  </div>
+    </div>
+
+
+  </main>
+</div>
+
+<!-- ══ PAGE 3 — Matches ══ -->
+<div class="pg" id="p3">
+  <nav>
+    <div class="logo">bossjob<div class="logo-dot"></div></div>
+    <div class="steps">
+      <div class="step done"><div class="step-num">✓</div> Resume</div><div class="step-sep">›</div>
+      <div class="step done"><div class="step-num">✓</div> Preferences</div><div class="step-sep">›</div>
+      <div class="step cur"><div class="step-num">3</div> Matches</div><div class="step-sep">›</div>
+      <div class="step"><div class="step-num">4</div> Explore</div>
+    </div>
+  </nav>
+  <main>
+    <div class="p3hd"><h2>Your Top Matches</h2><p>3 highly matched jobs based on your profile and preferences</p>
+      <div class="p3dots"><div class="pdot cur" id="mp0"></div><div class="pdot" id="mp1"></div><div class="pdot" id="mp2"></div></div>
+    </div>
+    <div class="jcwrap">
+      <div class="jc on" id="jc0"><div class="jct"><div class="jcl">🏦</div><div class="jci"><div class="jcc">Stripe · San Francisco, CA</div><div class="jcn">Senior Product Manager</div><div class="jcgs"><span class="jcg">$160K–$200K</span><span class="jcg">Hybrid</span><span class="jcg">Growth Stage</span><span class="jcm">98% Match</span></div></div></div><div class="jcst">Highlights</div><div class="jcbs"><div class="jcb">Own the core payments product roadmap, reporting to VP of Product</div><div class="jcb">Cross-functional collaboration with Engineering, Design, and Data</div><div class="jcb">Equity + full benefits including education stipend</div></div><div class="jcdv"></div><div class="jcst">Why it fits you</div><div class="jcrs"><span class="jcr">✓ Skills match</span><span class="jcr">✓ Salary aligned</span><span class="jcr">✓ Hybrid mode</span></div><div class="jcspace"></div></div>
+      <div class="jc" id="jc1"><div class="jct"><div class="jcl">🤖</div><div class="jci"><div class="jcc">Anthropic · San Francisco, CA</div><div class="jcn">Product Manager, Trust &amp; Safety</div><div class="jcgs"><span class="jcg">$140K–$180K</span><span class="jcg">Hybrid</span><span class="jcg">AI Frontier</span><span class="jcm">95% Match</span></div></div></div><div class="jcst">Highlights</div><div class="jcbs"><div class="jcb">Build next-gen AI safety products with real-world impact</div><div class="jcb">Small team, high autonomy — directly shape product direction</div><div class="jcb">Top-tier AI research environment with exceptional growth</div></div><div class="jcdv"></div><div class="jcst">Why it fits you</div><div class="jcrs"><span class="jcr">✓ Background fit</span><span class="jcr">✓ Growth stage</span><span class="jcr">✓ Salary aligned</span></div><div class="jcspace"></div></div>
+      <div class="jc" id="jc2"><div class="jct"><div class="jcl">🛒</div><div class="jci"><div class="jcc">Shopify · Remote</div><div class="jcn">Product Manager, Merchant Growth</div><div class="jcgs"><span class="jcg">$130K–$165K</span><span class="jcg">Remote</span><span class="jcg">Public Co.</span><span class="jcm">91% Match</span></div></div></div><div class="jcst">Highlights</div><div class="jcbs"><div class="jcb">Fully remote — maximum flexibility and work-life balance</div><div class="jcb">Drive growth products for millions of merchants worldwide</div><div class="jcb">International team with diverse, multicultural environment</div></div><div class="jcdv"></div><div class="jcst">Why it fits you</div><div class="jcrs"><span class="jcr">✓ Remote match</span><span class="jcr">✓ Salary aligned</span><span class="jcr">✓ Skills fit</span></div><div class="jcspace"></div></div>
+    </div>
+    <div class="mact">
+      <button class="btn-dislike" onclick="openDL()">👎 Not Interested</button>
+      <button class="btn-like" onclick="doLike()">👍 Like</button>
+    </div>
+  </main>
+</div>
+
+<div class="mov" id="dlm">
+  <div class="mo"><div class="mot">What didn't work for you?</div><div class="mos">Your feedback helps us improve match quality for the next batch.</div><textarea class="mota" id="dlr" placeholder="e.g. Salary below expectations, role doesn't match..." oninput="chkDL()"></textarea><div class="mof"><button class="btn-cancel" onclick="closeDL()">Cancel</button><button class="btn-sub" id="msb" onclick="submitDL()">Submit &amp; Continue</button></div></div>
+</div>
+
+<!-- ══ PAGE 4 — Explore ══ -->
+<div class="pg" id="p4">
+  <nav>
+    <div class="logo">bossjob<div class="logo-dot"></div></div>
+    <div class="steps">
+      <div class="step done"><div class="step-num">✓</div> Resume</div><div class="step-sep">›</div>
+      <div class="step done"><div class="step-num">✓</div> Preferences</div><div class="step-sep">›</div>
+      <div class="step done"><div class="step-num">✓</div> Matches</div><div class="step-sep">›</div>
+      <div class="step cur"><div class="step-num">4</div> Explore</div>
+    </div>
+  </nav>
+  <main>
+    <div class="p4icon">✦</div>
+    <div class="p4title">Start exploring your jobs</div>
+    <div class="p4sub">Based on your profile and preferences, we've curated the best matching opportunities for you</div>
+    <div class="p4badge">142 matched jobs found</div>
+    <div class="p4done">🎉 Setup complete</div>
+    <div class="p4grid">
+      <div class="p4cd"><div class="ph l"></div><div class="ph2 m"></div><div class="ph2 s"></div></div>
+      <div class="p4cd"><div class="ph m"></div><div class="ph2 l"></div><div class="ph2 s"></div></div>
+      <div class="p4cd"><div class="ph s"></div><div class="ph2 m"></div><div class="ph2 l"></div></div>
+      <div class="p4cd"><div class="ph l"></div><div class="ph2 s"></div><div class="ph2 m"></div></div>
+      <div class="p4cd"><div class="ph m"></div><div class="ph2 l"></div><div class="ph2 s"></div></div>
+      <div class="p4cd"><div class="ph s"></div><div class="ph2 m"></div><div class="ph2 l"></div></div>
+    </div>
+  </main>
+</div>
+
+<input type="file" id="resume-file-input" accept=".pdf" style="display:none">
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+var API = 'http://localhost:8000';
+
+function toggleExisting(){
+  var wrap=document.getElementById('existing-wrap');
+  var btn=document.getElementById('existing-btn');
+  var isOpen=wrap.style.display==='flex';
+  wrap.style.display=isOpen?'none':'flex';
+  wrap.style.flexDirection='column';
+  btn.textContent=isOpen?'Select from Existing ›':'Hide ‹';
+}
+function goTo(id){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+
+/* ── p1 upload ── */
+// Global state
+var resumeId = null;   // set after successful parse
+var matchData = [];    // set after /api/matches/search
+
+function doUp(){
+  document.getElementById('resume-file-input').click();
+}
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('resume-file-input').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    if(file) _uploadFile(file);
+  });
+});
+
+async function _uploadFile(file){
+  var z = document.getElementById('upz');
+  if(z.classList.contains('loading') || z.classList.contains('done')) return;
+  z.classList.add('loading');
+  document.getElementById('up-content').innerHTML = '<div class="ac-title" style="color:var(--primary)">Parsing your resume...</div><div class="ac-sub">Reading experience, skills, and education</div>';
+  document.getElementById('up-icon').textContent = '⏳';
+
+  try {
+    var form = new FormData();
+    form.append('file', file);
+    var resp = await fetch(API + '/api/resume/parse', {method:'POST', body:form});
+    if(!resp.ok) throw new Error('Server error ' + resp.status);
+    var data = await resp.json();
+
+    resumeId = data.resume_id;
+    var p = data.parsed;
+
+    var tags = [];
+    if(p.years_of_experience) tags.push(p.years_of_experience + ' yrs exp');
+    if(p.education && p.education[0]) tags.push((p.education[0].degree||'').split(' ').slice(-2).join(' '));
+    (p.skills||[]).slice(0,3).forEach(s => tags.push(s));
+
+    z.classList.remove('loading'); z.classList.add('done');
+    document.getElementById('up-content').innerHTML =
+      '<div class="ac-title" style="color:var(--success)">✓ Resume parsed successfully</div>' +
+      '<div class="tags">' + tags.filter(Boolean).map(t=>'<span class="tag-blue">'+t+'</span>').join('') + '</div>';
+    document.getElementById('up-icon').textContent = '✓';
+    setTimeout(() => goTo('p2'), 900);
+
+  } catch(err) {
+    z.classList.remove('loading');
+    document.getElementById('up-content').innerHTML =
+      '<div class="ac-title" style="color:var(--error)">✗ Upload failed</div>' +
+      '<div class="ac-sub">' + err.message + '. Please try again.</div>';
+    document.getElementById('up-icon').textContent = '✗';
+  }
+}
+
+/* ── p1b section toggle + preview sync ── */
+function toggleSection(item){
+  var body=item.querySelector('.rs-body');
+  var chev=item.querySelector('.rs-chevron');
+  var isOpen=body.style.display!=='none'&&body.style.display!=='';
+  body.style.display=isOpen?'none':'block';
+  if(chev)chev.style.transform=isOpen?'':'rotate(90deg)';
+}
+var pvMap={name:'pv-name',email:'pv-email',location:'pv-location',linkedin:'pv-linkedin',summary:'pv-summary','edu-degree':'pv-edu-degree','edu-school':'pv-edu-school','edu-year':'pv-edu-year'};
+function syncPreview(field,val){
+  var id=pvMap[field];if(!id)return;
+  var el=document.getElementById(id);if(!el)return;
+  el.textContent=val;el.classList.remove('pv-hl');void el.offsetWidth;el.classList.add('pv-hl');
+}
+
+/* ══ PAGE 2 — Preferences floating card logic ══ */
+var pfcStep=1;
+var pfcTotal=5;
+var prefs={jf:'',wa:'',loc:'',jt:'',sal:''};
+var negOn=false;
+
+var stepDefs=[
+  {key:'jf',rowId:'pr-jf',valId:'pv-jf',title:'Job Function',nextQ:'What\'s your preferred <strong>work arrangement</strong>?'},
+  {key:'wa',rowId:'pr-wa',valId:'pv-wa',title:'Work Arrangement',nextQ:'Where would you like to work? Tell me your <strong>preferred location</strong>.'},
+  {key:'loc',rowId:'pr-loc',valId:'pv-loc',title:'Desired Location',nextQ:'What <strong>job type</strong> are you looking for?'},
+  {key:'jt',rowId:'pr-jt',valId:'pv-jt',title:'Job Type',nextQ:'Last one — what\'s your <strong>expected salary range</strong>?'},
+  {key:'sal',rowId:'pr-sal',valId:'pv-sal',title:'Expected Salary',nextQ:''}
+];
+
+var stepBodies=[
+  /* step 1: chips */
+  `<div class="pfc-label">Select all that apply</div>
+   <div class="pfc-chips" id="pfc-chips">
+     <div class="pfc-chip" onclick="togglePFCChip(this)">Product Management</div>
+     <div class="pfc-chip" onclick="togglePFCChip(this)">Software Engineering</div>
+     <div class="pfc-chip" onclick="togglePFCChip(this)">Data Science</div>
+     <div class="pfc-chip" onclick="togglePFCChip(this)">UX / Design</div>
+     <div class="pfc-chip" onclick="togglePFCChip(this)">Marketing</div>
+     <div class="pfc-chip" onclick="togglePFCChip(this)">Operations</div>
+     <div class="pfc-chip" onclick="togglePFCChip(this)">Sales</div>
+     <div class="pfc-chip" onclick="togglePFCChip(this)">Finance</div>
+   </div>`,
+  /* step 2: work arrangement */
+  `<div class="pfc-label">Choose one</div>
+   <div class="pfc-opts" id="pfc-opts">
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">🏢 Onsite — full in-office</span></div>
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">🔀 Hybrid — flexible schedule</span></div>
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">🌐 Remote — fully distributed</span></div>
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">💼 Open to all</span></div>
+   </div>`,
+  /* step 3: location */
+  `<div class="pfc-label">City or region</div>
+   <input class="pfc-loc-input" id="pfc-loc" placeholder="Type a city or region..." oninput="onPFCLoc()">
+   <div class="pfc-loc-sugs">
+     <div class="pfc-loc-sug" onclick="pickPFCLoc(this)">San Francisco, CA</div>
+     <div class="pfc-loc-sug" onclick="pickPFCLoc(this)">New York, NY</div>
+     <div class="pfc-loc-sug" onclick="pickPFCLoc(this)">Seattle, WA</div>
+     <div class="pfc-loc-sug" onclick="pickPFCLoc(this)">Austin, TX</div>
+     <div class="pfc-loc-sug" onclick="pickPFCLoc(this)">Remote (Anywhere)</div>
+   </div>`,
+  /* step 4: job type */
+  `<div class="pfc-label">Choose one</div>
+   <div class="pfc-opts" id="pfc-opts">
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">Full-time</span></div>
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">Part-time</span></div>
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">Contract / Freelance</span></div>
+     <div class="pfc-opt" onclick="selectPFCOpt(this)"><div class="pfc-opt-radio"></div><span class="pfc-opt-label">Internship</span></div>
+   </div>`,
+  /* step 5: salary */
+  `<div class="pfc-label">Salary</div>
+   <div class="pfc-sal-currency-row">
+     <div class="pfc-sal-prefix">USD</div>
+     <input class="pfc-sal-inp" id="pfc-sal-from" type="number" placeholder="$" min="0" oninput="chkSalBtn()">
+     <div class="pfc-sal-sep">—</div>
+     <input class="pfc-sal-inp" id="pfc-sal-to" type="number" placeholder="$" min="0" oninput="chkSalBtn()">
+     <div class="pfc-sal-period"><select id="pfc-sal-period"><option>Monthly</option><option>Annually</option></select></div>
+   </div>
+   <div class="pfc-neg-row" onclick="toggleNeg()">
+     <div class="pfc-neg-check" id="pfc-neg"></div>
+     <span class="pfc-neg-label">Negotiable</span>
+   </div>`
+];
+
+function renderCard(step){
+  document.getElementById('pfc-title').textContent=stepDefs[step-1].title;
+  document.getElementById('pfc-page').textContent=step+' / '+pfcTotal;
+  document.getElementById('pfc-body').innerHTML=stepBodies[step-1];
+  document.getElementById('pfc-prev').disabled=step===1;
+  document.getElementById('pfc-back-btn').disabled=step===1;
+  document.getElementById('pfc-next-pg').disabled=true;
+  var nextBtn=document.getElementById('pfc-submit');
+  nextBtn.textContent=step===pfcTotal?'Submit →':'Next';
+  nextBtn.classList.remove('en');
+  // step 5 salary always enabled; others require selection
+  if(step===5)nextBtn.classList.add('en'); // salary always submittable
+  negOn=false;
+  // re-animate card
+  var card=document.getElementById('pref-float-card');
+  card.style.animation='none';void card.offsetWidth;card.style.animation='slideUp .28s cubic-bezier(.16,1,.3,1) both';
+}
+
+function togglePFCChip(el){
+  el.classList.toggle('sel');
+  var any=document.querySelectorAll('#pfc-chips .pfc-chip.sel').length>0;
+  document.getElementById('pfc-submit').classList.toggle('en',any);
+}
+function selectPFCOpt(el){
+  el.closest('.pfc-opts').querySelectorAll('.pfc-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');document.getElementById('pfc-submit').classList.add('en');
+}
+function onPFCLoc(){
+  document.getElementById('pfc-submit').classList.toggle('en',document.getElementById('pfc-loc').value.trim().length>0);
+}
+function pickPFCLoc(el){document.getElementById('pfc-loc').value=el.textContent;document.getElementById('pfc-submit').classList.add('en');}
+function toggleNeg(){negOn=!negOn;document.getElementById('pfc-neg').classList.toggle('on',negOn);document.getElementById('pfc-submit').classList.add('en');}
+function chkSalBtn(){
+  var f=document.getElementById('pfc-sal-from').value;
+  var t=document.getElementById('pfc-sal-to').value;
+  document.getElementById('pfc-submit').classList.toggle('en',!!(f||t||negOn));
+}
+
+function pfcGetVal(){
+  var s=pfcStep;
+  if(s===1)return[...document.querySelectorAll('#pfc-chips .pfc-chip.sel')].map(c=>c.textContent).join(', ');
+  if(s===2){var o=document.querySelector('#pfc-opts .pfc-opt.sel .pfc-opt-label');return o?o.textContent.replace(/^\S+\s/,'').split('—')[0].trim():'';}
+  if(s===3)return document.getElementById('pfc-loc').value.trim();
+  if(s===4){var o=document.querySelector('#pfc-opts .pfc-opt.sel .pfc-opt-label');return o?o.textContent.trim():'';}
+  if(s===5){
+    var f=document.getElementById('pfc-sal-from').value;
+    var t=document.getElementById('pfc-sal-to').value;
+    var period=document.getElementById('pfc-sal-period').value;
+    return negOn&&!f&&!t?'Negotiable':(f&&t?'$'+f+' – $'+t+' / '+period.toLowerCase().replace('annually','yr').replace('monthly','mo'):'Flexible');
+  }
+  return '';
+}
+
+function pfcAdvance(skipped){
+  var val=skipped?'Skipped':pfcGetVal();
+  if(!val&&!skipped)return;
+  var def=stepDefs[pfcStep-1];
+  if(!skipped){prefs[def.key]=val;updatePrefPanel(def.rowId,def.valId,val);}
+  addUserBubble(skipped?'Skip':val);
+  updateProgress();
+  var nextQ=stepDefs[pfcStep-1].nextQ;
+  if(pfcStep<pfcTotal){
+    pfcStep++;
+    setTimeout(()=>{
+      if(nextQ)addAIBubble(nextQ);
+      renderCard(pfcStep);
+      scrollMsgs();
+    },200);
+  } else {
+    document.getElementById('pref-float-card').style.display='none';
+    setTimeout(()=>{
+      addAIBubble('🎉 All set! I have everything I need. Ready to see your matches?');
+      document.getElementById('btn-match').classList.add('en');
+      scrollMsgs();
+    },200);
+  }
+}
+function pfcSubmit(){pfcAdvance(false);}
+function pfcSkip(){pfcAdvance(true);}
+function pfcPrev(){if(pfcStep<=1)return;pfcStep--;renderCard(pfcStep);}
+function pfcNext(){}
+
+function addAIBubble(html){
+  var m=document.getElementById('pref-msgs');
+  var connector=document.createElement('div');connector.className='pref-connector';
+  connector.innerHTML='<div class="pref-connector-line"></div><div class="pref-connector-dot"></div>';
+  m.appendChild(connector);
+  var d=document.createElement('div');d.className='pm-ai';d.style.marginBottom='8px';
+  d.innerHTML='<div class="pm-av">✦</div><div class="pm-bubble">'+html+'</div>';
+  m.appendChild(d);scrollMsgs();
+}
+function addUserBubble(txt){
+  var m=document.getElementById('pref-msgs');
+  var d=document.createElement('div');d.className='pm-user';d.style.marginBottom='8px';
+  d.innerHTML='<div class="pm-user-bubble">'+txt+'</div>';
+  m.appendChild(d);scrollMsgs();
+}
+function scrollMsgs(){var m=document.getElementById('pref-msgs');setTimeout(()=>m.scrollTop=m.scrollHeight,60);}
+
+function updatePrefPanel(rowId,valId,val){
+  var row=document.getElementById(rowId);if(row)row.classList.add('filled');
+  var el=document.getElementById(valId);if(!el)return;
+  el.textContent=val.length>20?val.slice(0,19)+'…':val;el.classList.remove('empty');
+}
+function updateProgress(){
+  var c=Object.values(prefs).filter(v=>v).length;
+  var pt=document.getElementById('prog-txt');if(pt)pt.textContent=c+' / 5';
+  var pf=document.getElementById('prog-fill');if(pf)pf.style.width=(c/5*100)+'%';
+}
+
+// Free-text → slot extraction via API
+async function sendPrefMsg(){
+  var inp = document.getElementById('pref-inp');
+  var txt = inp.value.trim(); if(!txt) return;
+  inp.value = '';
+  addUserBubble(txt);
+
+  try {
+    var resp = await fetch(API + '/api/preferences/extract', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({text: txt})
+    });
+    if(!resp.ok) throw new Error();
+    var slots = await resp.json();
+
+    var updated = [];
+    if(slots.job_functions && slots.job_functions.length){
+      prefs.jf = slots.job_functions.join(', ');
+      updatePrefPanel('pr-jf','pv-jf',prefs.jf); updated.push('job function');
+    }
+    if(slots.work_arrangement){
+      prefs.wa = slots.work_arrangement;
+      updatePrefPanel('pr-wa','pv-wa',prefs.wa); updated.push('work arrangement');
+    }
+    if(slots.location){
+      prefs.loc = slots.location;
+      updatePrefPanel('pr-loc','pv-loc',prefs.loc); updated.push('location');
+    }
+    if(slots.job_type){
+      prefs.jt = slots.job_type;
+      updatePrefPanel('pr-jt','pv-jt',prefs.jt); updated.push('job type');
+    }
+    if(slots.salary_min || slots.salary_max){
+      prefs.sal = [slots.salary_min, slots.salary_max].filter(Boolean).join('–');
+      updatePrefPanel('pr-sal','pv-sal',prefs.sal); updated.push('salary');
+    }
+    if(slots.extra_notes && slots.extra_notes.length){
+      slots.extra_notes.forEach(note => {
+        var e = document.createElement('div'); e.className='extra-item'; e.textContent=note;
+        document.getElementById('extra-items').appendChild(e);
+      });
+    }
+
+    updateProgress();
+    var filledCount = Object.values(prefs).filter(v=>v).length;
+    var ack = updated.length
+      ? 'Got it — updated your ' + updated.join(', ') + '.'
+      : 'Noted — I\'ll keep that in mind ✓';
+    if(filledCount >= 3){
+      ack += ' You\'re ready to see matches!';
+      document.getElementById('btn-match').classList.add('en');
+    }
+    addAIBubble(ack);
+
+  } catch(e) {
+    // Fallback: store as raw extra note
+    var el = document.createElement('div'); el.className='extra-item'; el.textContent=txt;
+    document.getElementById('extra-items').appendChild(el);
+    addAIBubble('Noted — I\'ll keep that in mind when matching jobs for you ✓');
+  }
+  scrollMsgs();
+}
+
+// Save preferences then navigate to Page 3
+async function goToMatches(){
+  if(resumeId){
+    var salMin=null, salMax=null, salNeg=false;
+    if(prefs.sal === 'Negotiable'){ salNeg=true; }
+    else {
+      var m = prefs.sal.match(/\$?([\d,]+)\s*[–\-]\s*\$?([\d,]+)/);
+      if(m){ salMin=parseInt(m[1].replace(/,/g,'')); salMax=parseInt(m[2].replace(/,/g,'')); }
+    }
+    var extraNotes = [...document.querySelectorAll('#extra-items .extra-item')].map(e=>e.textContent);
+    try {
+      await fetch(API + '/api/preferences/save', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          resume_id:         resumeId,
+          job_functions:     prefs.jf ? prefs.jf.split(', ') : [],
+          work_arrangement:  prefs.wa || null,
+          location:          prefs.loc || null,
+          job_type:          prefs.jt || null,
+          salary_min:        salMin,
+          salary_max:        salMax,
+          salary_negotiable: salNeg,
+          extra_notes:       extraNotes,
+          feedback_reasons:  feedbackReasons,
+        })
+      });
+    } catch(e){ /* proceed even if save fails */ }
+  }
+  goTo('p3');
+  loadMatches();
+}
+
+/* ── p3 ── */
+var cur = 0;
+var feedbackReasons = [];
+
+// Load real matches from API; keep hardcoded demo cards as fallback
+async function loadMatches(){
+  if(!resumeId) return;
+  document.querySelector('.p3hd p').textContent = 'Finding your best matches...';
+  try {
+    var resp = await fetch(API + '/api/matches/search', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({resume_id: resumeId, top_n: 3})
+    });
+    if(!resp.ok) throw new Error();
+    var data = await resp.json();
+    matchData = data.matches;
+    _renderMatchCards(matchData);
+    document.querySelector('.p3hd p').textContent =
+      matchData.length + ' highly matched jobs based on your profile';
+  } catch(e){
+    document.querySelector('.p3hd p').textContent =
+      '3 highly matched jobs based on your profile and preferences';
+  }
+}
+
+function _renderMatchCards(matches){
+  var wrap = document.querySelector('.jcwrap');
+  var dotsEl = document.querySelector('.p3dots');
+  wrap.innerHTML = ''; dotsEl.innerHTML = ''; cur = 0;
+
+  matches.forEach(function(m, i){
+    var dot = document.createElement('div');
+    dot.className = 'pdot' + (i===0 ? ' cur' : ''); dot.id = 'mp'+i;
+    dotsEl.appendChild(dot);
+
+    var salStr = (m.salary_min && m.salary_max)
+      ? m.currency+' '+m.salary_min.toLocaleString()+'–'+m.salary_max.toLocaleString()
+      : 'Salary TBD';
+    var waLabel = m.work_arrangement
+      ? m.work_arrangement.charAt(0).toUpperCase()+m.work_arrangement.slice(1) : '';
+    var bullets = (m.highlights||[]).map(h=>'<div class="jcb">'+h+'</div>').join('');
+    var whyFit  = (m.why_fit||[]).map(r=>'<span class="jcr">✓ '+r+'</span>').join('');
+
+    var card = document.createElement('div');
+    card.className = 'jc'+(i===0?' on':''); card.id = 'jc'+i;
+    card.innerHTML =
+      '<div class="jct"><div class="jcl">🏢</div><div class="jci">' +
+        '<div class="jcc">'+m.company+' · '+m.location+'</div>' +
+        '<div class="jcn">'+m.title+'</div>' +
+        '<div class="jcgs"><span class="jcg">'+salStr+'</span>' +
+        (waLabel?'<span class="jcg">'+waLabel+'</span>':'')+
+        '<span class="jcm">'+m.match_score+'% Match</span></div>' +
+      '</div></div>' +
+      '<div class="jcst">Highlights</div><div class="jcbs">'+bullets+'</div>' +
+      '<div class="jcdv"></div>' +
+      '<div class="jcst">Why it fits you</div><div class="jcrs">'+whyFit+'</div>' +
+      '<div class="jcspace"></div>';
+    wrap.appendChild(card);
+  });
+}
+
+function doLike(){
+  var jd = matchData[cur];
+  document.getElementById('mp'+cur).classList.remove('cur');
+  document.getElementById('mp'+cur).classList.add('lk');
+  if(resumeId && jd){
+    fetch(API+'/api/matches/feedback',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({resume_id:resumeId, jd_id:jd.id, action:'like'})
+    }).catch(()=>{});
+  }
+  _nxt();
+}
+function openDL(){document.getElementById('dlr').value='';document.getElementById('msb').classList.remove('on');document.getElementById('dlm').classList.add('on');}
+function closeDL(){document.getElementById('dlm').classList.remove('on');}
+function chkDL(){document.getElementById('msb').classList.toggle('on',document.getElementById('dlr').value.trim().length>0);}
+function submitDL(){
+  var reason = document.getElementById('dlr').value.trim();
+  if(!reason) return;
+  var jd = matchData[cur];
+  feedbackReasons.push({jobIdx:cur, reason:reason});
+  if(resumeId && jd){
+    fetch(API+'/api/matches/feedback',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({resume_id:resumeId, jd_id:jd.id, action:'dislike', reason:reason})
+    }).catch(()=>{});
+  }
+  closeDL();
+  document.getElementById('mp'+cur).classList.remove('cur');
+  document.getElementById('mp'+cur).classList.add('dl');
+  _nxt();
+}
+function _nxt(){
+  document.getElementById('jc'+cur).classList.remove('on');
+  cur++;
+  var total = matchData.length || 3;
+  if(cur < total){
+    document.getElementById('jc'+cur).classList.add('on');
+    document.getElementById('mp'+cur).classList.add('cur');
+  } else {
+    setTimeout(()=>goTo('p4'), 350);
+  }
+}
+</script>
+</body>
+</html>

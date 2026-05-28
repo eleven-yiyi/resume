@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+
+# Environment
+backend/.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+.next/
+.cache/
+
+# IDE
+.vscode/
+.idea/
+
+# DB / data
+*.sqlite
+*.db
+
+# Claude
+.claude/
