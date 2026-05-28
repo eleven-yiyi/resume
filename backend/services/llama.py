@@ -9,6 +9,7 @@ from sentence_transformers import SentenceTransformer
 
 LLAMA_BASE_URL = os.getenv("LLAMA_BASE_URL", "http://localhost:11434")
 LLAMA_MODEL    = os.getenv("LLAMA_MODEL", "llama3.1")
+LLAMA_API_KEY  = os.getenv("LLAMA_API_KEY", "")
 EMBED_MODEL    = os.getenv("EMBED_MODEL", "all-MiniLM-L6-v2")
 
 
@@ -19,9 +20,13 @@ def _embed_model() -> SentenceTransformer:
 
 async def llama_chat(messages: list[dict], temperature: float = 0.2) -> str:
     """Call Llama chat endpoint, return response text."""
+    headers = {}
+    if LLAMA_API_KEY:
+        headers["Authorization"] = f"Bearer {LLAMA_API_KEY}"
     async with httpx.AsyncClient(timeout=60.0) as client:
         resp = await client.post(
             f"{LLAMA_BASE_URL}/v1/chat/completions",
+            headers=headers,
             json={"model": LLAMA_MODEL, "messages": messages, "temperature": temperature},
         )
         resp.raise_for_status()

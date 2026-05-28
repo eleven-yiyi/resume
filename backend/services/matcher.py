@@ -92,15 +92,33 @@ def _cosine(a: list[float], b: list[float]) -> float:
     return float(np.dot(a, b) / denom) if denom else 0.0
 
 
+def _parse_vec(v) -> list[float]:
+    """Embedding may come back from asyncpg as a string like '[0.1,0.2,...]'."""
+    if not v:
+        return []
+    if isinstance(v, str):
+        import json
+        return json.loads(v)
+    return list(v)
+
+
 def _rerank(rows, query_vec: list[float]) -> list[dict]:
     scored = []
     for row in rows:
         jd = dict(row)
-        jd_vec = jd.get("embedding") or []
+        jd_vec = _parse_vec(jd.get("embedding"))
         score = _cosine(query_vec, jd_vec) if jd_vec else 0.0
         jd["_score"] = score
         scored.append(jd)
     return sorted(scored, key=lambda x: x["_score"], reverse=True)
+
+
+def _parse_json_field(v) -> list:
+    """JSONB fields may come back as a string when stored via str()."""
+    if isinstance(v, str):
+        import json
+        return json.loads(v)
+    return v or []
 
 
 async def _annotate(jd: dict, resume_facts: dict, preferences: dict) -> dict:
@@ -112,16 +130,16 @@ async def _annotate(jd: dict, resume_facts: dict, preferences: dict) -> dict:
         reasons = ["Profile aligns with role requirements"]
 
     return {
-        "id":              str(jd["id"]),
-        "title":           jd["title"],
-        "company":         jd["company"],
-        "location":        jd["location"],
+        "id":               str(jd["id"]),
+        "title":            jd["title"],
+        "company":          jd["company"],
+        "location":         jd["location"],
         "work_arrangement": jd["work_arrangement"],
-        "salary_min":      jd["salary_min"],
-        "salary_max":      jd["salary_max"],
-        "currency":        jd["currency"],
-        "highlights":      jd["highlights"],
-        "tags":            jd["tags"],
-        "match_score":     round(jd["_score"] * 100),
-        "why_fit":         reasons if isinstance(reasons, list) else [str(reasons)],
+        "salary_min":       jd["salary_min"],
+        "salary_max":       jd["salary_max"],
+        "currency":         jd["currency"],
+        "highlights":       _parse_json_field(jd["highlights"]),
+        "tags":             _parse_json_field(jd["tags"]),
+        "match_score":      round(jd["_score"] * 100),
+        "why_fit":          reasons if isinstance(reasons, list) else [str(reasons)],
     }

@@ -6,6 +6,7 @@ POST /api/resume/parse
   - Stores in DB, returns resume_id + parsed_json
 """
 import io
+import json
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from sqlalchemy import text
 from pypdf import PdfReader
@@ -88,7 +89,7 @@ async def parse_resume(file: UploadFile = File(...)):
     async with engine.begin() as conn:
         row = await conn.execute(
             text("INSERT INTO resumes (raw_text, parsed_json) VALUES (:t, :j) RETURNING id"),
-            {"t": raw_text, "j": parsed if isinstance(parsed, str) else str(parsed)},
+            {"t": raw_text, "j": parsed if isinstance(parsed, str) else json.dumps(parsed, ensure_ascii=False)},
         )
         resume_id = str(row.scalar())
 
