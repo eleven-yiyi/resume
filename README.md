@@ -20,7 +20,8 @@
 
 | 层 | 技术 |
 |---|---|
-| 前端原型 | 单页 HTML（可迁移至 Next.js） |
+| 前端 | Next.js 14 + Tailwind CSS + Zustand |
+| 前端原型 | 单页 HTML（已对接 API，可独立演示） |
 | 后端 | FastAPI + Python 3.11 |
 | 数据库 | PostgreSQL 16 + pgvector |
 | 解析 | pypdf（原生 PDF）/ PaddleOCR（扫描件） |
@@ -31,8 +32,28 @@
 
 ```
 .
-├── bossjob-onboarding.html   # 前端原型（4 页 onboarding 流程）
+├── bossjob-onboarding.html   # 前端原型（HTML，可独立演示）
 ├── docker-compose.yml        # PostgreSQL + pgvector + 后端容器
+├── frontend/                 # Next.js 前端
+│   ├── src/
+│   │   ├── app/              # App Router 入口
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   │   └── StepNav.tsx       # 步骤导航栏
+│   │   │   └── steps/
+│   │   │       ├── ResumeUpload.tsx  # Step 1：上传简历
+│   │   │       ├── Preferences.tsx   # Step 2：偏好收集（对话 + 浮动卡片）
+│   │   │       ├── PreferenceCard.tsx
+│   │   │       ├── Matches.tsx       # Step 3：匹配结果 + 反馈
+│   │   │       └── Explore.tsx       # Step 4：完成页
+│   │   ├── store/
+│   │   │   └── onboarding.ts         # Zustand 全局状态
+│   │   ├── lib/
+│   │   │   ├── api.ts                # 后端 API 调用封装
+│   │   │   └── utils.ts
+│   │   └── types/
+│   │       └── index.ts              # TypeScript 类型定义
+│   └── package.json
 └── backend/
     ├── main.py               # FastAPI 入口
     ├── prompts.py            # Llama prompt 模板（解析 / 偏好提取 / 匹配理由）
@@ -84,11 +105,22 @@ python scripts/import_jds.py
 
 脚本会自动生成向量嵌入并写入数据库。
 
-### 4. 打开前端原型
+### 4. 启动 Next.js 前端
 
-直接用浏览器打开 `bossjob-onboarding.html`，确保 `API = 'http://localhost:8000'`（文件顶部 `<script>` 中可修改）。
+```bash
+cd frontend
+cp .env.local.example .env.local   # 默认指向 http://localhost:8000，无需修改
+npm install
+npm run dev
+```
 
-> **Demo 模式**：未上传 PDF 时，前端使用 hardcoded 示例数据，不依赖后端，可独立演示。
+打开 `http://localhost:3000` 即可使用完整的四步 onboarding 流程。
+
+### 4b. 仅使用 HTML 原型（无需 Node.js）
+
+直接用浏览器打开 `bossjob-onboarding.html`。API 地址在文件顶部 `<script>` 中的 `var API` 变量修改。
+
+> **Demo 模式**：未上传 PDF 时，两种前端均使用 hardcoded 示例数据，不依赖后端，可独立演示。
 
 ## API 接口
 
