@@ -8,7 +8,7 @@ from sqlalchemy import text
 import json
 
 from services import matcher
-from main import engine
+from database import engine
 
 router = APIRouter()
 

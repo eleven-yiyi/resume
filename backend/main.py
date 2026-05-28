@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.ext.asyncio import create_async_engine
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
+from database import engine
 from routers import resume, preferences, matches
 from services import matcher
 
@@ -17,13 +16,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://boss:boss123@localhost:5432/bossjob")
-# asyncpg needs postgresql+asyncpg scheme
-if DATABASE_URL.startswith("postgresql://"):
-    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
-
-engine = create_async_engine(DATABASE_URL, echo=False)
 
 @app.on_event("startup")
 async def startup():

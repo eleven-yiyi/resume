@@ -8,12 +8,11 @@ POST /api/resume/parse
 import io
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import create_async_engine
 from pypdf import PdfReader
 
+from database import engine
 from services.llama import llama_chat_json
 from prompts import resume_parse_messages
-from main import engine
 
 router = APIRouter()
 

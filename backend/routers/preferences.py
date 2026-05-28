@@ -10,7 +10,7 @@ import json
 
 from services.llama import llama_chat_json
 from prompts import pref_extract_messages
-from main import engine
+from database import engine
 
 router = APIRouter()
 
